@@ -20,8 +20,8 @@ public class RdbParserTest {
     private DefaultRdbVisitor visitor = new DefaultRdbVisitor();
     @Test
     public void parse() throws Exception {
-        RedisInputStream input = new RedisInputStream(new FileInputStream(""));
-        RdbParser parse = new RdbParser(null,visitor);
+        RedisInputStream input = new RedisInputStream(new FileInputStream("D:\\tmp\\dump.rdb"));
+        RdbParser parse = new RdbParser(input,visitor);
         parse.parse();
 
 

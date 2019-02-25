@@ -1,6 +1,8 @@
 package com.ai.ds.dj.rdb.parse;
-import com.ai.ds.dj.rdb.datatype.ContextKeyValuePair;
-import com.ai.ds.dj.rdb.event.Event;
+import com.ai.ds.dj.datatype.ContextKeyValuePair;
+import com.ai.ds.dj.datatype.KeyValuePair;
+
+import com.ai.ds.dj.message.Event;
 import com.ai.ds.dj.rdb.io.RedisInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +91,7 @@ public class RdbParser {
         /*
          * ----------------------------
          * 52 45 44 49 53              # Magic String "REDIS"
-         * 30 30 30 33                 # RDB Version Number in big endian. In this case, version = 0003 = 3
+         * 30 30 30 37                 # RDB Version Number in big endian. In this case, version = 0007 = 7
          * ----------------------------
          */
 
@@ -111,22 +113,22 @@ public class RdbParser {
             ContextKeyValuePair kv = new ContextKeyValuePair();
             switch (type) {
                 case RDB_OPCODE_EXPIRETIME:
-                     rdbVisitor.applyExpireTime(in, version, kv);
+                    event = rdbVisitor.applyExpireTime(in, version, kv);
                     break;
                 case RDB_OPCODE_EXPIRETIME_MS:
-                    rdbVisitor.applyExpireTimeMs(in, version, kv);
+                    event =rdbVisitor.applyExpireTimeMs(in, version, kv);
                     break;
                 case RDB_OPCODE_FREQ:
-                    rdbVisitor.applyFreq(in, version, kv);
+                    event =rdbVisitor.applyFreq(in, version, kv);
                     break;
                 case RDB_OPCODE_IDLE:
-                     rdbVisitor.applyIdle(in, version, kv);
+                    event =rdbVisitor.applyIdle(in, version, kv);
                     break;
                 case RDB_OPCODE_AUX:
-                     rdbVisitor.applyAux(in, version);
+                    event = rdbVisitor.applyAux(in, version);
                     break;
                 case RDB_OPCODE_MODULE_AUX:
-                     rdbVisitor.applyModuleAux(in, version);
+                    event = rdbVisitor.applyModuleAux(in, version);
                     break;
                 case RDB_OPCODE_RESIZEDB:
                     rdbVisitor.applyResizeDB(in, version, kv);
@@ -139,10 +141,10 @@ public class RdbParser {
 //                    this.replicator.submitEvent(new PostRdbSyncEvent(checksum));
                     break loop;
                 case RDB_TYPE_STRING:
-                     rdbVisitor.applyString(in, version, kv);
+                    event =rdbVisitor.applyString(in, version, kv);
                     break;
                 case RDB_TYPE_LIST:
-                    rdbVisitor.applyList(in, version, kv);
+                    event =rdbVisitor.applyList(in, version, kv);
                     break;
                 case RDB_TYPE_SET:
                     event = rdbVisitor.applySet(in, version, kv);
@@ -186,9 +188,16 @@ public class RdbParser {
                 default:
                     throw new AssertionError("unexpected value type:" + type + ", check your ModuleParser or ValueIterableRdbVisitor.");
             }
-            if(logger.isDebugEnabled()){
-                logger.debug("数据类型为key={} value={}，",kv.getKey(),kv.getValue());
+
+            if( event instanceof KeyValuePair){
+                KeyValuePair str = (KeyValuePair)event;
+                logger.debug("事件处理key->{} value={}",new String((byte[])str.getKey()));
             }
+
+        }
+
+        if(logger.isDebugEnabled()){
+            logger.debug("处理rdb 结束");
         }
         return in.total();
     }

@@ -9,11 +9,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>rdb</artifactId>
+    <artifactId>dataType</artifactId>
     <dependencies>
         <dependency>
             <groupId>com.ai.ds</groupId>
-            <artifactId>dataType</artifactId>
+            <artifactId>message</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

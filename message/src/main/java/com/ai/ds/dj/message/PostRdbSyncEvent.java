@@ -1,6 +1,6 @@
 
 
-package com.ai.ds.dj.rdb.event;
+package com.ai.ds.dj.message;
 
 
 public class PostRdbSyncEvent implements Event {

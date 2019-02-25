@@ -1,9 +1,9 @@
 
 package com.ai.ds.dj.rdb.skip;
-import com.ai.ds.dj.rdb.datatype.ContextKeyValuePair;
-import com.ai.ds.dj.rdb.datatype.DB;
-import com.ai.ds.dj.rdb.datatype.Module;
-import com.ai.ds.dj.rdb.event.Event;
+import com.ai.ds.dj.datatype.ContextKeyValuePair;
+import com.ai.ds.dj.datatype.DB;
+import com.ai.ds.dj.datatype.Module;
+import com.ai.ds.dj.message.Event;
 import com.ai.ds.dj.rdb.io.RedisInputStream;
 import com.ai.ds.dj.rdb.parse.DefaultRdbVisitor;
 import com.ai.ds.dj.rdb.parse.ModuleParser;

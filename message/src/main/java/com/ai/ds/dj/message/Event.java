@@ -1,6 +1,6 @@
 
 
-package com.ai.ds.dj.rdb.event;
+package com.ai.ds.dj.message;
 
 import java.io.Serializable;
 

@@ -1,7 +1,7 @@
 
 package com.ai.ds.dj.rdb.parse;
-import com.ai.ds.dj.rdb.datatype.*;
-import com.ai.ds.dj.rdb.event.Event;
+import com.ai.ds.dj.datatype.*;
+import com.ai.ds.dj.message.Event;
 import com.ai.ds.dj.rdb.io.RedisInputStream;
 import com.ai.ds.dj.rdb.skip.SkipRdbParser;
 import com.ai.ds.dj.rdb.util.ByteArrayList;
