@@ -3,7 +3,7 @@ package com.ai.ds.dj.rdb.parse;
 import com.ai.ds.dj.datatype.ContextKeyValuePair;
 import com.ai.ds.dj.datatype.DB;
 
-import com.ai.ds.dj.message.Event;
+import com.ai.ds.dj.datatype.Event;
 import com.ai.ds.dj.rdb.io.RedisInputStream;
 
 import java.io.IOException;

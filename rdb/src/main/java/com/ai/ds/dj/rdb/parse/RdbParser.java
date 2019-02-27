@@ -2,7 +2,8 @@ package com.ai.ds.dj.rdb.parse;
 import com.ai.ds.dj.datatype.ContextKeyValuePair;
 import com.ai.ds.dj.datatype.KeyValuePair;
 
-import com.ai.ds.dj.message.Event;
+import com.ai.ds.dj.datatype.Event;
+import com.ai.ds.dj.message.MessageCentre;
 import com.ai.ds.dj.rdb.io.RedisInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -189,10 +190,17 @@ public class RdbParser {
                     throw new AssertionError("unexpected value type:" + type + ", check your ModuleParser or ValueIterableRdbVisitor.");
             }
 
-            if( event instanceof KeyValuePair){
-                KeyValuePair str = (KeyValuePair)event;
-                logger.debug("事件处理key->{} value={}",new String((byte[])str.getKey()));
+//            if( event instanceof KeyValuePair){
+//                KeyValuePair str = (KeyValuePair)event;
+//                logger.debug("事件处理key->{} value={}",new String((byte[])str.getKey()));
+//            }
+
+            if(event!=null){
+                event.setEventType(type);
+                fireEvent(event);
+
             }
+
 
         }
 
@@ -200,6 +208,14 @@ public class RdbParser {
             logger.debug("处理rdb 结束");
         }
         return in.total();
+    }
+
+    /**
+     * 处理事件
+     * @param event 事件类型
+     */
+    public void fireEvent(Event event){
+        MessageCentre.getMessageCentre().addEvent(event);
     }
 }
 

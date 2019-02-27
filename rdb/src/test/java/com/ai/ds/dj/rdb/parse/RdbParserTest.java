@@ -1,6 +1,7 @@
 package com.ai.ds.dj.rdb.parse;
 
 
+import com.ai.ds.dj.message.consumer.RdbEventConsumer;
 import com.ai.ds.dj.rdb.io.RedisInputStream;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,9 +21,12 @@ public class RdbParserTest {
     private DefaultRdbVisitor visitor = new DefaultRdbVisitor();
     @Test
     public void parse() throws Exception {
+        RdbEventConsumer consumer = new RdbEventConsumer();
+        consumer.start();
         RedisInputStream input = new RedisInputStream(new FileInputStream("D:\\tmp\\dump.rdb"));
         RdbParser parse = new RdbParser(input,visitor);
         parse.parse();
+
 
 
     }

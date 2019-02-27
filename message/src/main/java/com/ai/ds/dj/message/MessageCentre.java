@@ -1,22 +1,25 @@
 package com.ai.ds.dj.message;
 
+import com.ai.ds.dj.datatype.Event;
+
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * Copyright asiainfo.com
  * 消息中心，取消息放消息
  * @author wuwh6
  */
-public class MessageCentren {
+public class MessageCentre {
 
-    private BlockingQueue<MessageEvent> events = new ArrayBlockingQueue<MessageEvent>(1000);
+    private BlockingQueue<Event> events = new LinkedBlockingDeque<Event>();
 
-    public void addEvent(MessageEvent event){
+    public void addEvent(Event event){
         this.events.add(event);
     }
 
-    public MessageEvent get(){
+    public Event take(){
         try {
             return this.events.take();
         } catch (InterruptedException e) {
@@ -24,16 +27,16 @@ public class MessageCentren {
         }
         return null;
     }
-    private MessageCentren(){
+    private MessageCentre(){
 
     }
-    private static MessageCentren centre = new MessageCentren();
+    private static MessageCentre centre = new MessageCentre();
 
     /**
      * 获取消息中心
      * @return
      */
-    public static MessageCentren getMessageCentre(){
+    public static MessageCentre getMessageCentre(){
         return centre;
     }
 
