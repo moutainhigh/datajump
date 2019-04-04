@@ -39,10 +39,7 @@ public class RediseAutoProxyCluster extends JedisCluster {
 
     private boolean isMaster(){
         //如果是主节点
-        if(this.isMaster){
-
-
-        }
+       return isMaster;
     }
 
 
@@ -61,6 +58,7 @@ public class RediseAutoProxyCluster extends JedisCluster {
         else {
            return  this.seconder.set(key,value);
         }
+        return null;
     }
 
     @Override
