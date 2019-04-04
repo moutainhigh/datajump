@@ -15,7 +15,7 @@ public class RdbEventConsumer extends EventConsumer {
 
     @Override
     public void handleString(KeyStringValueString pa) {
-        logger.info("string 处理 key={},value={}",new String(pa.getKey()),new String(pa.getValue()));
+        logger.info(" 同步[String类型]  key={},value={} 到备redis集群中",new String(pa.getKey()),new String(pa.getValue()));
     }
 
     @Override

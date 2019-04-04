@@ -155,9 +155,12 @@ public class Protocol {
             processError(is);
             return null;
         } else {
-            throw new RedisConnectionException("Unknown reply: " + (char) b);
+            return process(is);
+            //throw new RedisConnectionException("Unknown reply: " + (char) b);
         }
     }
+
+
 
 
     private static String[] parseTargetHostAndSlot(String clusterRedirectResponse) {

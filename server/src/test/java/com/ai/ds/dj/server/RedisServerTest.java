@@ -20,8 +20,8 @@ public class RedisServerTest {
 
     @org.junit.Test
     public void beginPSync() throws Exception {
-        config.setNodeAddress("192.168.23.147");
-        config.setPort(10204);
+        config.setNodeAddress("192.168.23.148");
+        config.setPort(10202);
         config.setTimeout(2000);
         DJConfig dj = new DJConfig();
         dj.setFromNode(config);
