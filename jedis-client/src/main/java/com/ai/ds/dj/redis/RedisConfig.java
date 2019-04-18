@@ -10,4 +10,6 @@ public class RedisConfig {
     private String masterIp;
     private String secondIp;
 
+    public static final String CONTROLLER_CHANNEL="controller";
+
 }

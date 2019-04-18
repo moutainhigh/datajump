@@ -1,6 +1,8 @@
 package com.ai.ds.dj.redis;
 
 import com.ai.ds.dj.connection.*;
+import com.ai.ds.dj.redis.controller.ControllerMsgThread;
+import com.ai.ds.dj.redis.controller.ControllerPubSub;
 import redis.clients.jedis.*;
 import redis.clients.jedis.params.set.SetParams;
 import redis.clients.jedis.params.sortedset.ZAddParams;
@@ -135,11 +137,15 @@ public class RediseAutoProxyCluster extends JedisCluster {
         initSet(secondHosts,this.secondAddress);
         if(!masterHosts.isEmpty()){
             this.master = new JedisCluster(masterHosts);
+
         }
         if(!secondHosts.isEmpty()){
             this.seconder = new JedisCluster(secondHosts);
-        }
 
+        }
+        Thread task = new Thread(new ControllerMsgThread(this));
+        task.setName("redis-controller-Msg");
+        task.start();
        this.isMaster = true;
     }
 
