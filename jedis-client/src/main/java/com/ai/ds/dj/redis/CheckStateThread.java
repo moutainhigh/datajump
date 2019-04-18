@@ -1,0 +1,36 @@
+package com.ai.ds.dj.redis;
+
+/**
+ * Copyright asiainfo.com
+ * 检查集群是否可用
+ * @author wuwh6
+ */
+public class CheckStateThread implements Runnable {
+
+    private RediseAutoProxyCluster cluster ;
+    private boolean tag = true;
+    CheckStateThread(RediseAutoProxyCluster cluster){
+       this.cluster = cluster;
+    }
+    @Override
+    public void run() {
+        while(tag){
+           boolean master = cluster.CheckClusterState(cluster.getMasterHosts());
+           cluster.setMasterState(master);
+           boolean slaver = cluster.CheckClusterState(cluster.getSecondHosts());
+           cluster.setBackupState(slaver);
+            try {
+                Thread.sleep(cluster.getCheckInterval());
+            } catch (InterruptedException e) {
+
+            }
+
+
+        }
+
+    }
+
+    public void shutdown(){
+        this.tag = false;
+    }
+}
