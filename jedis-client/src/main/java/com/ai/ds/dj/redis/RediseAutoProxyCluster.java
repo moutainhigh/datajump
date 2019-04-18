@@ -1315,9 +1315,9 @@ public class RediseAutoProxyCluster extends JedisCluster {
 
     @Override
     public ScanResult<Map.Entry<String, String>> hscan(String key, String cursor) {
-        return new JedisCommand<ScanResult>(this) {
+        return new JedisCommand<ScanResult<Map.Entry<String, String>>>(this) {
             @Override
-            public ScanResult  execute(JedisCluster cluster) {
+            public ScanResult<Map.Entry<String, String>>  execute(JedisCluster cluster) {
                 return cluster.hscan(key,cursor);
             }
         }.run();
@@ -1565,102 +1565,227 @@ public class RediseAutoProxyCluster extends JedisCluster {
 
     @Override
     public Long zinterstore(String dstkey, String... sets) {
-        return super.zinterstore(dstkey, sets);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long  execute(JedisCluster cluster) {
+                return cluster.zinterstore(dstkey, sets);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zinterstore(String dstkey, ZParams params, String... sets) {
-        return super.zinterstore(dstkey, params, sets);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long  execute(JedisCluster cluster) {
+                return cluster.zinterstore(dstkey, params, sets);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zunionstore(String dstkey, String... sets) {
-        return super.zunionstore(dstkey, sets);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long  execute(JedisCluster cluster) {
+                return cluster.zunionstore(dstkey, sets);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zunionstore(String dstkey, ZParams params, String... sets) {
-        return super.zunionstore(dstkey, params, sets);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long  execute(JedisCluster cluster) {
+                return cluster.zunionstore(dstkey, params, sets);
+            }
+        }.run();
+
     }
 
     @Override
     public String brpoplpush(String source, String destination, int timeout) {
-        return super.brpoplpush(source, destination, timeout);
+
+        return new JedisCommand<String>(this) {
+            @Override
+            public String  execute(JedisCluster cluster) {
+                return cluster.brpoplpush(source, destination, timeout);
+            }
+        }.run();
     }
 
     @Override
     public Long publish(String channel, String message) {
-        return super.publish(channel, message);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long  execute(JedisCluster cluster) {
+                return cluster.publish(channel, message);
+            }
+        }.run();
+
     }
 
     @Override
     public void subscribe(JedisPubSub jedisPubSub, String... channels) {
-        super.subscribe(jedisPubSub, channels);
+         new JedisCommand<Long>(this) {
+            @Override
+            public Long  execute(JedisCluster cluster) {
+                 cluster.subscribe(jedisPubSub, channels);
+                 return 0L;
+            }
+        }.run();
+
     }
 
     @Override
     public void psubscribe(JedisPubSub jedisPubSub, String... patterns) {
-        super.psubscribe(jedisPubSub, patterns);
+
+        new JedisCommand<Long>(this) {
+            @Override
+            public Long  execute(JedisCluster cluster) {
+                cluster.psubscribe(jedisPubSub, patterns);
+                return 0L;
+            }
+        }.run();
     }
 
     @Override
     public Long bitop(BitOP op, String destKey, String... srcKeys) {
-        return super.bitop(op, destKey, srcKeys);
+
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long  execute(JedisCluster cluster) {
+                return cluster.bitop(op, destKey, srcKeys);
+            }
+        }.run();
     }
 
     @Override
     public String pfmerge(String destkey, String... sourcekeys) {
-        return super.pfmerge(destkey, sourcekeys);
+
+        return new JedisCommand<String>(this) {
+            @Override
+            public String  execute(JedisCluster cluster) {
+                return cluster.pfmerge(destkey, sourcekeys);
+            }
+        }.run();
     }
 
     @Override
     public long pfcount(String... keys) {
-        return super.pfcount(keys);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long  execute(JedisCluster cluster) {
+                return cluster.pfcount(keys);
+            }
+        }.run();
+
     }
 
     @Override
     public Object eval(String script, int keyCount, String... params) {
-        return super.eval(script, keyCount, params);
+        return new JedisCommand<Object>(this) {
+            @Override
+            public Object  execute(JedisCluster cluster) {
+                return cluster.eval(script, keyCount, params);
+            }
+        }.run();
+
     }
 
     @Override
     public Object eval(String script, String key) {
-        return super.eval(script, key);
+
+        return new JedisCommand<Object>(this) {
+            @Override
+            public Object  execute(JedisCluster cluster) {
+                return cluster.eval(script, key);
+            }
+        }.run();
     }
 
     @Override
     public Object eval(String script, List<String> keys, List<String> args) {
-        return super.eval(script, keys, args);
+
+        return new JedisCommand<Object>(this) {
+            @Override
+            public Object  execute(JedisCluster cluster) {
+                return cluster.eval(script, keys, args);
+            }
+        }.run();
     }
 
     @Override
     public Object evalsha(String sha1, int keyCount, String... params) {
-        return super.evalsha(sha1, keyCount, params);
+        return new JedisCommand<Object>(this) {
+            @Override
+            public Object  execute(JedisCluster cluster) {
+                return cluster.evalsha(sha1, keyCount, params);
+            }
+        }.run();
     }
 
     @Override
     public Object evalsha(String sha1, List<String> keys, List<String> args) {
-        return super.evalsha(sha1, keys, args);
+
+        return new JedisCommand<Object>(this) {
+            @Override
+            public Object  execute(JedisCluster cluster) {
+                return cluster.evalsha(sha1, keys, args);
+            }
+        }.run();
     }
 
     @Override
     public Object evalsha(String script, String key) {
-        return super.evalsha(script, key);
+        return new JedisCommand<Object>(this) {
+            @Override
+            public Object  execute(JedisCluster cluster) {
+                return cluster.evalsha(script, key);
+            }
+        }.run();
     }
 
     @Override
     public Boolean scriptExists(String sha1, String key) {
-        return super.scriptExists(sha1, key);
+        return new JedisCommand<Boolean>(this) {
+            @Override
+            public Boolean  execute(JedisCluster cluster) {
+                return cluster.scriptExists(sha1, key);
+            }
+        }.run();
+
     }
 
     @Override
     public List<Boolean> scriptExists(String key, String... sha1) {
-        return super.scriptExists(key, sha1);
+
+        return new JedisCommand<List<Boolean>>(this) {
+            @Override
+            public List<Boolean>  execute(JedisCluster cluster) {
+                return cluster.scriptExists(key, sha1);
+            }
+        }.run();
+
     }
 
     @Override
     public String scriptLoad(String script, String key) {
-        return super.scriptLoad(script, key);
+        return new JedisCommand<String>(this) {
+            @Override
+            public String  execute(JedisCluster cluster) {
+                return cluster.scriptLoad(script, key);
+            }
+        }.run();
     }
 
     public RediseAutoProxyCluster(HostAndPort master,HostAndPort senconde) {
@@ -1672,777 +1797,1741 @@ public class RediseAutoProxyCluster extends JedisCluster {
 
     @Override
     public void close() {
-        super.close();
+        if(this.seconder!=null){
+            this.seconder.close();
+        }
+        if(this.master!=null){
+            master.close();
+        }
     }
 
     @Override
     public Map<String, JedisPool> getClusterNodes() {
-        return super.getClusterNodes();
+        if(this.isMaster){
+            return master.getClusterNodes();
+        }
+        else {
+            return seconder.getClusterNodes();
+        }
     }
 
     @Override
     public String set(byte[] key, byte[] value) {
-        return super.set(key, value);
+        return new JedisCommand<String>(this) {
+            @Override
+            public String  execute(JedisCluster cluster) {
+                return cluster.set(key, value);
+            }
+        }.run();
+
     }
 
     @Override
     public String set(byte[] key, byte[] value, SetParams params) {
-        return super.set(key, value, params);
+        return new JedisCommand<String>(this) {
+            @Override
+            public String  execute(JedisCluster cluster) {
+                return cluster.set(key, value, params);
+            }
+        }.run();
+
     }
 
     @Override
     public byte[] get(byte[] key) {
-        return super.get(key);
+        return new JedisCommand<byte[]>(this) {
+            @Override
+            public byte[]  execute(JedisCluster cluster) {
+                return cluster.get(key);
+            }
+        }.run();
+
     }
 
     @Override
     public Long exists(byte[]... keys) {
-        return super.exists(keys);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.exists(keys);
+            }
+        }.run();
+
     }
 
     @Override
     public Boolean exists(byte[] key) {
-        return super.exists(key);
+        return new JedisCommand<Boolean>(this) {
+            @Override
+            public Boolean execute(JedisCluster cluster) {
+                return cluster.exists(key);
+            }
+        }.run();
     }
 
     @Override
     public Long persist(byte[] key) {
-        return super.persist(key);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.persist(key);
+            }
+        }.run();
     }
 
     @Override
     public String type(byte[] key) {
-        return super.type(key);
+        return new JedisCommand<String>(this) {
+            @Override
+            public String execute(JedisCluster cluster) {
+                return cluster.type(key);
+            }
+        }.run();
+
     }
 
     @Override
     public Long expire(byte[] key, int seconds) {
-        return super.expire(key, seconds);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.expire(key, seconds);
+            }
+        }.run();
+
     }
 
     @Override
     public Long pexpire(byte[] key, long milliseconds) {
-        return super.pexpire(key, milliseconds);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.pexpire(key, milliseconds);
+            }
+        }.run();
     }
 
     @Override
     public Long expireAt(byte[] key, long unixTime) {
-        return super.expireAt(key, unixTime);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.expireAt(key, unixTime);
+            }
+        }.run();
     }
 
     @Override
     public Long pexpireAt(byte[] key, long millisecondsTimestamp) {
-        return super.pexpireAt(key, millisecondsTimestamp);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.pexpireAt(key, millisecondsTimestamp);
+            }
+        }.run();
     }
 
     @Override
     public Long ttl(byte[] key) {
-        return super.ttl(key);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.ttl(key);
+            }
+        }.run();
     }
 
     @Override
     public Boolean setbit(byte[] key, long offset, boolean value) {
-        return super.setbit(key, offset, value);
+        return new JedisCommand<Boolean>(this) {
+            @Override
+            public Boolean execute(JedisCluster cluster) {
+                return cluster.setbit(key, offset, value);
+            }
+        }.run();
+
     }
 
     @Override
     public Boolean setbit(byte[] key, long offset, byte[] value) {
-        return super.setbit(key, offset, value);
+        return new JedisCommand<Boolean>(this) {
+            @Override
+            public Boolean execute(JedisCluster cluster) {
+                return cluster.setbit(key, offset, value);
+            }
+        }.run();
+
     }
 
     @Override
     public Boolean getbit(byte[] key, long offset) {
-        return super.getbit(key, offset);
+
+        return new JedisCommand<Boolean>(this) {
+            @Override
+            public Boolean execute(JedisCluster cluster) {
+                return cluster.getbit(key, offset);
+            }
+        }.run();
     }
 
     @Override
     public Long setrange(byte[] key, long offset, byte[] value) {
-        return super.setrange(key, offset, value);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.setrange(key, offset, value);
+            }
+        }.run();
+
     }
 
     @Override
     public byte[] getrange(byte[] key, long startOffset, long endOffset) {
-        return super.getrange(key, startOffset, endOffset);
+
+        return new JedisCommand<byte[]>(this) {
+            @Override
+            public byte[] execute(JedisCluster cluster) {
+                return cluster.getrange(key, startOffset, endOffset);
+            }
+        }.run();
+
     }
 
     @Override
     public byte[] getSet(byte[] key, byte[] value) {
-        return super.getSet(key, value);
+        return new JedisCommand<byte[]>(this) {
+            @Override
+            public byte[] execute(JedisCluster cluster) {
+                return cluster.getSet(key, value);
+            }
+        }.run();
     }
 
     @Override
     public Long setnx(byte[] key, byte[] value) {
-        return super.setnx(key, value);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.setnx(key, value);
+            }
+        }.run();
     }
 
     @Override
     public String setex(byte[] key, int seconds, byte[] value) {
-        return super.setex(key, seconds, value);
+        return new JedisCommand<String>(this) {
+            @Override
+            public String execute(JedisCluster cluster) {
+                return cluster.setex(key, seconds, value);
+            }
+        }.run();
     }
 
     @Override
     public Long decrBy(byte[] key, long integer) {
-        return super.decrBy(key, integer);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.decrBy(key, integer);
+            }
+        }.run();
     }
 
     @Override
     public Long decr(byte[] key) {
-        return super.decr(key);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.decr(key);
+            }
+        }.run();
     }
 
     @Override
     public Long incrBy(byte[] key, long integer) {
-        return super.incrBy(key, integer);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.incrBy(key, integer);
+            }
+        }.run();
     }
 
     @Override
     public Double incrByFloat(byte[] key, double value) {
-        return super.incrByFloat(key, value);
+        return new JedisCommand<Double>(this) {
+            @Override
+            public Double execute(JedisCluster cluster) {
+                return cluster.incrByFloat(key, value);
+            }
+        }.run();
+
     }
 
     @Override
     public Long incr(byte[] key) {
-        return super.incr(key);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.incr(key);
+            }
+        }.run();
     }
 
     @Override
     public Long append(byte[] key, byte[] value) {
-        return super.append(key, value);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.append(key, value);
+            }
+        }.run();
+
     }
 
     @Override
     public byte[] substr(byte[] key, int start, int end) {
-        return super.substr(key, start, end);
+        return new JedisCommand<byte[]>(this) {
+            @Override
+            public byte[] execute(JedisCluster cluster) {
+                return cluster.substr(key, start, end);
+            }
+        }.run();
+
     }
 
     @Override
     public Long hset(byte[] key, byte[] field, byte[] value) {
-        return super.hset(key, field, value);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.hset(key, field, value);
+            }
+        }.run();
+
     }
 
     @Override
     public byte[] hget(byte[] key, byte[] field) {
-        return super.hget(key, field);
+        return new JedisCommand<byte[]>(this) {
+            @Override
+            public byte[] execute(JedisCluster cluster) {
+                return cluster.hget(key, field);
+            }
+        }.run();
+
     }
 
     @Override
     public Long hsetnx(byte[] key, byte[] field, byte[] value) {
-        return super.hsetnx(key, field, value);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.hsetnx(key, field, value);
+            }
+        }.run();
+
     }
 
     @Override
     public String hmset(byte[] key, Map<byte[], byte[]> hash) {
-        return super.hmset(key, hash);
+        return new JedisCommand<String>(this) {
+            @Override
+            public String execute(JedisCluster cluster) {
+                return cluster.hmset(key, hash);
+            }
+        }.run();
     }
 
     @Override
     public List<byte[]> hmget(byte[] key, byte[]... fields) {
-        return super.hmget(key, fields);
+        return new JedisCommand<List<byte[]>>(this) {
+            @Override
+            public List<byte[]> execute(JedisCluster cluster) {
+                return cluster.hmget(key, fields);
+            }
+        }.run();
+
     }
 
     @Override
     public Long hincrBy(byte[] key, byte[] field, long value) {
-        return super.hincrBy(key, field, value);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.hincrBy(key, field, value);
+            }
+        }.run();
     }
 
     @Override
     public Double hincrByFloat(byte[] key, byte[] field, double value) {
-        return super.hincrByFloat(key, field, value);
+        return new JedisCommand<Double>(this) {
+            @Override
+            public Double execute(JedisCluster cluster) {
+                return cluster.hincrByFloat(key, field, value);
+            }
+        }.run();
+
     }
 
     @Override
     public Boolean hexists(byte[] key, byte[] field) {
-        return super.hexists(key, field);
+        return new JedisCommand<Boolean>(this) {
+            @Override
+            public Boolean execute(JedisCluster cluster) {
+                return cluster.hexists(key, field);
+            }
+        }.run();
+
     }
 
     @Override
     public Long hdel(byte[] key, byte[]... field) {
-        return super.hdel(key, field);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.hdel(key, field);
+            }
+        }.run();
+
+
     }
 
     @Override
     public Long hlen(byte[] key) {
-        return super.hlen(key);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.hlen(key);
+            }
+        }.run();
     }
 
     @Override
     public Set<byte[]> hkeys(byte[] key) {
-        return super.hkeys(key);
+        return new JedisCommand<Set<byte[]>>(this) {
+            @Override
+            public Set<byte[]> execute(JedisCluster cluster) {
+                return cluster.hkeys(key);
+            }
+        }.run();
+
     }
 
     @Override
     public Collection<byte[]> hvals(byte[] key) {
-        return super.hvals(key);
+
+        return new JedisCommand<Collection<byte[]>>(this) {
+            @Override
+            public Collection<byte[]> execute(JedisCluster cluster) {
+                return cluster.hvals(key);
+            }
+        }.run();
+
     }
 
     @Override
     public Map<byte[], byte[]> hgetAll(byte[] key) {
-        return super.hgetAll(key);
+
+        return new JedisCommand<Map<byte[], byte[]>>(this) {
+            @Override
+            public Map<byte[], byte[]> execute(JedisCluster cluster) {
+                return cluster.hgetAll(key);
+            }
+        }.run();
     }
 
     @Override
     public Long rpush(byte[] key, byte[]... args) {
-        return super.rpush(key, args);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.rpush(key, args);
+            }
+        }.run();
+
     }
 
     @Override
     public Long lpush(byte[] key, byte[]... args) {
-        return super.lpush(key, args);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.lpush(key, args);
+            }
+        }.run();
+
     }
 
     @Override
     public Long llen(byte[] key) {
-        return super.llen(key);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.llen(key);
+            }
+        }.run();
+
     }
 
     @Override
     public List<byte[]> lrange(byte[] key, long start, long end) {
-        return super.lrange(key, start, end);
+
+        return new JedisCommand<List<byte[]>>(this) {
+            @Override
+            public List<byte[]> execute(JedisCluster cluster) {
+                return cluster.lrange(key, start, end);
+            }
+        }.run();
     }
 
     @Override
     public String ltrim(byte[] key, long start, long end) {
-        return super.ltrim(key, start, end);
+        return new JedisCommand<String>(this) {
+            @Override
+            public String execute(JedisCluster cluster) {
+                return cluster.ltrim(key, start, end);
+            }
+        }.run();
     }
 
     @Override
     public byte[] lindex(byte[] key, long index) {
-        return super.lindex(key, index);
+        return new JedisCommand<byte[]>(this) {
+            @Override
+            public byte[] execute(JedisCluster cluster) {
+                return cluster.lindex(key, index);
+            }
+        }.run();
+
     }
 
     @Override
     public String lset(byte[] key, long index, byte[] value) {
-        return super.lset(key, index, value);
+
+        return new JedisCommand<String>(this) {
+            @Override
+            public String execute(JedisCluster cluster) {
+                return cluster.lset(key, index, value);
+            }
+        }.run();
     }
 
     @Override
     public Long lrem(byte[] key, long count, byte[] value) {
-        return super.lrem(key, count, value);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.lrem(key, count, value);
+            }
+        }.run();
+
     }
 
     @Override
     public byte[] lpop(byte[] key) {
-        return super.lpop(key);
+        return new JedisCommand<byte[]>(this) {
+            @Override
+            public byte[] execute(JedisCluster cluster) {
+                return cluster.lpop(key);
+            }
+        }.run();
+
     }
 
     @Override
     public byte[] rpop(byte[] key) {
-        return super.rpop(key);
+        return new JedisCommand<byte[]>(this) {
+            @Override
+            public byte[] execute(JedisCluster cluster) {
+                return cluster.rpop(key);
+            }
+        }.run();
     }
 
     @Override
     public Long sadd(byte[] key, byte[]... member) {
-        return super.sadd(key, member);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.sadd(key, member);
+            }
+        }.run();
     }
 
     @Override
     public Set<byte[]> smembers(byte[] key) {
-        return super.smembers(key);
+        return new JedisCommand<Set<byte[]>>(this) {
+            @Override
+            public Set<byte[]> execute(JedisCluster cluster) {
+                return cluster.smembers(key);
+            }
+        }.run();
+
     }
 
     @Override
     public Long srem(byte[] key, byte[]... member) {
-        return super.srem(key, member);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.srem(key, member);
+            }
+        }.run();
     }
 
     @Override
     public byte[] spop(byte[] key) {
-        return super.spop(key);
+
+        return new JedisCommand<byte[]>(this) {
+            @Override
+            public byte[] execute(JedisCluster cluster) {
+                return cluster.spop(key);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<byte[]> spop(byte[] key, long count) {
-        return super.spop(key, count);
+
+        return new JedisCommand<Set<byte[]>>(this) {
+            @Override
+            public Set<byte[]> execute(JedisCluster cluster) {
+                return cluster.spop(key, count);
+            }
+        }.run();
     }
 
     @Override
     public Long scard(byte[] key) {
-        return super.scard(key);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.scard(key);
+            }
+        }.run();
+
     }
 
     @Override
     public Boolean sismember(byte[] key, byte[] member) {
-        return super.sismember(key, member);
+        return new JedisCommand<Boolean>(this) {
+            @Override
+            public Boolean execute(JedisCluster cluster) {
+                return cluster.sismember(key, member);
+            }
+        }.run();
+
     }
 
     @Override
     public byte[] srandmember(byte[] key) {
-        return super.srandmember(key);
+        return new JedisCommand<byte[]>(this) {
+            @Override
+            public byte[] execute(JedisCluster cluster) {
+                return cluster.srandmember(key);
+            }
+        }.run();
+
     }
 
     @Override
     public Long strlen(byte[] key) {
-        return super.strlen(key);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.strlen(key);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zadd(byte[] key, double score, byte[] member) {
-        return super.zadd(key, score, member);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.zadd(key, score, member);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zadd(byte[] key, double score, byte[] member, ZAddParams params) {
-        return super.zadd(key, score, member, params);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.zadd(key, score, member, params);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zadd(byte[] key, Map<byte[], Double> scoreMembers) {
-        return super.zadd(key, scoreMembers);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.zadd(key, scoreMembers);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zadd(byte[] key, Map<byte[], Double> scoreMembers, ZAddParams params) {
-        return super.zadd(key, scoreMembers, params);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.zadd(key, scoreMembers, params);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<byte[]> zrange(byte[] key, long start, long end) {
-        return super.zrange(key, start, end);
+        return new JedisCommand<Set<byte[]> >(this) {
+            @Override
+            public Set<byte[]>  execute(JedisCluster cluster) {
+                return cluster.zrange(key, start, end);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zrem(byte[] key, byte[]... member) {
-        return super.zrem(key, member);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.zrem(key, member);
+            }
+        }.run();
+
     }
 
     @Override
     public Double zincrby(byte[] key, double score, byte[] member) {
-        return super.zincrby(key, score, member);
+        return new JedisCommand<Double>(this) {
+            @Override
+            public Double execute(JedisCluster cluster) {
+                return cluster.zincrby(key, score, member);
+            }
+        }.run();
     }
 
     @Override
     public Double zincrby(byte[] key, double score, byte[] member, ZIncrByParams params) {
-        return super.zincrby(key, score, member, params);
+
+        return new JedisCommand<Double>(this) {
+            @Override
+            public Double execute(JedisCluster cluster) {
+                return cluster.zincrby(key, score, member, params);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zrank(byte[] key, byte[] member) {
-        return super.zrank(key, member);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.zrank(key, member);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zrevrank(byte[] key, byte[] member) {
-        return super.zrevrank(key, member);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.zrevrank(key, member);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<byte[]> zrevrange(byte[] key, long start, long end) {
-        return super.zrevrange(key, start, end);
+
+        return new JedisCommand<Set<byte[]>>(this) {
+            @Override
+            public Set<byte[]> execute(JedisCluster cluster) {
+                return cluster.zrevrange(key, start, end);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<Tuple> zrangeWithScores(byte[] key, long start, long end) {
-        return super.zrangeWithScores(key, start, end);
+
+        return new JedisCommand<Set<Tuple>>(this) {
+            @Override
+            public Set<Tuple> execute(JedisCluster cluster) {
+                return cluster.zrangeWithScores(key, start, end);
+            }
+        }.run();
     }
 
     @Override
     public Set<Tuple> zrevrangeWithScores(byte[] key, long start, long end) {
-        return super.zrevrangeWithScores(key, start, end);
+
+        return new JedisCommand<Set<Tuple>>(this) {
+            @Override
+            public Set<Tuple> execute(JedisCluster cluster) {
+                return cluster.zrevrangeWithScores(key, start, end);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zcard(byte[] key) {
-        return super.zcard(key);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.zcard(key);
+            }
+        }.run();
+
     }
 
     @Override
     public Double zscore(byte[] key, byte[] member) {
-        return super.zscore(key, member);
+
+        return new JedisCommand<Double>(this) {
+            @Override
+            public Double execute(JedisCluster cluster) {
+                return cluster.zscore(key, member);
+            }
+        }.run();
+
     }
 
     @Override
     public List<byte[]> sort(byte[] key) {
-        return super.sort(key);
+        return new JedisCommand<List<byte[]>>(this) {
+            @Override
+            public List<byte[]> execute(JedisCluster cluster) {
+                return cluster.sort(key);
+            }
+        }.run();
+
     }
 
     @Override
     public List<byte[]> sort(byte[] key, SortingParams sortingParameters) {
-        return super.sort(key, sortingParameters);
+        return new JedisCommand<List<byte[]>>(this) {
+            @Override
+            public List<byte[]> execute(JedisCluster cluster) {
+                return cluster.sort(key, sortingParameters);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zcount(byte[] key, double min, double max) {
-        return super.zcount(key, min, max);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.zcount(key, min, max);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zcount(byte[] key, byte[] min, byte[] max) {
-        return super.zcount(key, min, max);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.zcount(key, min, max);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<byte[]> zrangeByScore(byte[] key, double min, double max) {
-        return super.zrangeByScore(key, min, max);
+
+        return new JedisCommand<Set<byte[]>>(this) {
+            @Override
+            public Set<byte[]> execute(JedisCluster cluster) {
+                return cluster.zrangeByScore(key, min, max);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<byte[]> zrangeByScore(byte[] key, byte[] min, byte[] max) {
-        return super.zrangeByScore(key, min, max);
+
+        return new JedisCommand<Set<byte[]>>(this) {
+            @Override
+            public Set<byte[]> execute(JedisCluster cluster) {
+                return cluster.zrangeByScore(key, min, max);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<byte[]> zrevrangeByScore(byte[] key, double max, double min) {
-        return super.zrevrangeByScore(key, max, min);
+        return new JedisCommand<Set<byte[]>>(this) {
+            @Override
+            public Set<byte[]> execute(JedisCluster cluster) {
+                return cluster.zrevrangeByScore(key, max, min);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<byte[]> zrangeByScore(byte[] key, double min, double max, int offset, int count) {
-        return super.zrangeByScore(key, min, max, offset, count);
+
+        return new JedisCommand<Set<byte[]>>(this) {
+            @Override
+            public Set<byte[]> execute(JedisCluster cluster) {
+                return cluster.zrangeByScore(key, min, max, offset, count);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<byte[]> zrevrangeByScore(byte[] key, byte[] max, byte[] min) {
-        return super.zrevrangeByScore(key, max, min);
+        return new JedisCommand<Set<byte[]>>(this) {
+            @Override
+            public Set<byte[]> execute(JedisCluster cluster) {
+                return cluster.zrevrangeByScore(key, max, min);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<byte[]> zrangeByScore(byte[] key, byte[] min, byte[] max, int offset, int count) {
-        return super.zrangeByScore(key, min, max, offset, count);
+        return new JedisCommand<Set<byte[]>>(this) {
+            @Override
+            public Set<byte[]> execute(JedisCluster cluster) {
+                return cluster.zrangeByScore(key, min, max, offset, count);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<byte[]> zrevrangeByScore(byte[] key, double max, double min, int offset, int count) {
-        return super.zrevrangeByScore(key, max, min, offset, count);
+
+        return new JedisCommand<Set<byte[]>>(this) {
+            @Override
+            public Set<byte[]> execute(JedisCluster cluster) {
+                return cluster.zrevrangeByScore(key, max, min, offset, count);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<Tuple> zrangeByScoreWithScores(byte[] key, double min, double max) {
-        return super.zrangeByScoreWithScores(key, min, max);
+        return new JedisCommand<Set<Tuple>>(this) {
+            @Override
+            public Set<Tuple> execute(JedisCluster cluster) {
+                return cluster.zrangeByScoreWithScores(key, min, max);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<Tuple> zrevrangeByScoreWithScores(byte[] key, double max, double min) {
-        return super.zrevrangeByScoreWithScores(key, max, min);
+        return new JedisCommand<Set<Tuple>>(this) {
+            @Override
+            public Set<Tuple> execute(JedisCluster cluster) {
+                return cluster.zrevrangeByScoreWithScores(key, max, min);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<Tuple> zrangeByScoreWithScores(byte[] key, double min, double max, int offset, int count) {
-        return super.zrangeByScoreWithScores(key, min, max, offset, count);
+
+        return new JedisCommand<Set<Tuple>>(this) {
+            @Override
+            public Set<Tuple> execute(JedisCluster cluster) {
+                return cluster.zrangeByScoreWithScores(key, min, max, offset, count);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<byte[]> zrevrangeByScore(byte[] key, byte[] max, byte[] min, int offset, int count) {
-        return super.zrevrangeByScore(key, max, min, offset, count);
+
+        return new JedisCommand<Set<byte[]>>(this) {
+            @Override
+            public Set<byte[]> execute(JedisCluster cluster) {
+                return cluster.zrevrangeByScore(key, max, min, offset, count);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<Tuple> zrangeByScoreWithScores(byte[] key, byte[] min, byte[] max) {
-        return super.zrangeByScoreWithScores(key, min, max);
+        return new JedisCommand<Set<Tuple>>(this) {
+            @Override
+            public Set<Tuple> execute(JedisCluster cluster) {
+                return cluster.zrangeByScoreWithScores(key, min, max);
+            }
+        }.run();
     }
 
     @Override
     public Set<Tuple> zrevrangeByScoreWithScores(byte[] key, byte[] max, byte[] min) {
-        return super.zrevrangeByScoreWithScores(key, max, min);
+
+        return new JedisCommand<Set<Tuple>>(this) {
+            @Override
+            public Set<Tuple> execute(JedisCluster cluster) {
+                return cluster.zrevrangeByScoreWithScores(key, max, min);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<Tuple> zrangeByScoreWithScores(byte[] key, byte[] min, byte[] max, int offset, int count) {
-        return super.zrangeByScoreWithScores(key, min, max, offset, count);
+
+        return new JedisCommand<Set<Tuple>>(this) {
+            @Override
+            public Set<Tuple> execute(JedisCluster cluster) {
+                return cluster.zrangeByScoreWithScores(key, min, max, offset, count);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<Tuple> zrevrangeByScoreWithScores(byte[] key, double max, double min, int offset, int count) {
-        return super.zrevrangeByScoreWithScores(key, max, min, offset, count);
+
+        return new JedisCommand<Set<Tuple>>(this) {
+            @Override
+            public Set<Tuple> execute(JedisCluster cluster) {
+                return cluster.zrevrangeByScoreWithScores(key, max, min, offset, count);
+            }
+        }.run();
     }
 
     @Override
     public Set<Tuple> zrevrangeByScoreWithScores(byte[] key, byte[] max, byte[] min, int offset, int count) {
-        return super.zrevrangeByScoreWithScores(key, max, min, offset, count);
+
+        return new JedisCommand<Set<Tuple>>(this) {
+            @Override
+            public Set<Tuple> execute(JedisCluster cluster) {
+                return cluster.zrevrangeByScoreWithScores(key, max, min, offset, count);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zremrangeByRank(byte[] key, long start, long end) {
-        return super.zremrangeByRank(key, start, end);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.zremrangeByRank(key, start, end);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zremrangeByScore(byte[] key, double start, double end) {
-        return super.zremrangeByScore(key, start, end);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.zremrangeByScore(key, start, end);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zremrangeByScore(byte[] key, byte[] start, byte[] end) {
-        return super.zremrangeByScore(key, start, end);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.zremrangeByScore(key, start, end);
+            }
+        }.run();
+
     }
 
     @Override
     public Long linsert(byte[] key, BinaryClient.LIST_POSITION where, byte[] pivot, byte[] value) {
-        return super.linsert(key, where, pivot, value);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.linsert(key, where, pivot, value);
+            }
+        }.run();
+
     }
 
     @Override
     public Long lpushx(byte[] key, byte[]... arg) {
-        return super.lpushx(key, arg);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.lpushx(key, arg);
+            }
+        }.run();
+
     }
 
     @Override
     public Long rpushx(byte[] key, byte[]... arg) {
-        return super.rpushx(key, arg);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.rpushx(key, arg);
+            }
+        }.run();
     }
 
     @Override
     public Long del(byte[] key) {
-        return super.del(key);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.del(key);
+            }
+        }.run();
+
     }
 
     @Override
     public byte[] echo(byte[] arg) {
-        return super.echo(arg);
+        return new JedisCommand<byte[]>(this) {
+            @Override
+            public byte[] execute(JedisCluster cluster) {
+                return cluster.echo(arg);
+            }
+        }.run();
+
     }
 
     @Override
     public Long bitcount(byte[] key) {
-        return super.bitcount(key);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.bitcount(key);
+            }
+        }.run();
+
     }
 
     @Override
     public Long bitcount(byte[] key, long start, long end) {
-        return super.bitcount(key, start, end);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.bitcount(key, start, end);
+            }
+        }.run();
     }
 
     @Override
     public Long pfadd(byte[] key, byte[]... elements) {
-        return super.pfadd(key, elements);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.pfadd(key, elements);
+            }
+        }.run();
+
     }
 
     @Override
     public long pfcount(byte[] key) {
-        return super.pfcount(key);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.pfcount(key);
+            }
+        }.run();
+
     }
 
     @Override
     public List<byte[]> srandmember(byte[] key, int count) {
-        return super.srandmember(key, count);
+
+        return new JedisCommand<List<byte[]>>(this) {
+            @Override
+            public List<byte[]> execute(JedisCluster cluster) {
+                return cluster.srandmember(key, count);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zlexcount(byte[] key, byte[] min, byte[] max) {
-        return super.zlexcount(key, min, max);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.zlexcount(key, min, max);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<byte[]> zrangeByLex(byte[] key, byte[] min, byte[] max) {
-        return super.zrangeByLex(key, min, max);
+        return new JedisCommand<Set<byte[]>>(this) {
+            @Override
+            public Set<byte[]> execute(JedisCluster cluster) {
+                return cluster.zrangeByLex(key, min, max);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<byte[]> zrangeByLex(byte[] key, byte[] min, byte[] max, int offset, int count) {
-        return super.zrangeByLex(key, min, max, offset, count);
+
+        return new JedisCommand<Set<byte[]>>(this) {
+            @Override
+            public Set<byte[]> execute(JedisCluster cluster) {
+                return cluster.zrangeByLex(key, min, max, offset, count);
+            }
+        }.run();
+
+
     }
 
     @Override
     public Set<byte[]> zrevrangeByLex(byte[] key, byte[] max, byte[] min) {
-        return super.zrevrangeByLex(key, max, min);
+
+        return new JedisCommand<Set<byte[]>>(this) {
+            @Override
+            public Set<byte[]> execute(JedisCluster cluster) {
+                return cluster.zrevrangeByLex(key, max, min);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<byte[]> zrevrangeByLex(byte[] key, byte[] max, byte[] min, int offset, int count) {
-        return super.zrevrangeByLex(key, max, min, offset, count);
+        return new JedisCommand<Set<byte[]>>(this) {
+            @Override
+            public Set<byte[]> execute(JedisCluster cluster) {
+                return cluster.zrevrangeByLex(key, max, min, offset, count);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zremrangeByLex(byte[] key, byte[] min, byte[] max) {
-        return super.zremrangeByLex(key, min, max);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.zremrangeByLex(key, min, max);
+            }
+        }.run();
+
     }
 
     @Override
     public Object eval(byte[] script, byte[] keyCount, byte[]... params) {
-        return super.eval(script, keyCount, params);
+
+        return new JedisCommand<Object>(this) {
+            @Override
+            public Object execute(JedisCluster cluster) {
+                return cluster.eval(script, keyCount, params);
+            }
+        }.run();
+
     }
 
     @Override
     public Object eval(byte[] script, int keyCount, byte[]... params) {
-        return super.eval(script, keyCount, params);
+
+        return new JedisCommand<Object>(this) {
+            @Override
+            public Object execute(JedisCluster cluster) {
+                return cluster.eval(script, keyCount, params);
+            }
+        }.run();
+
     }
 
     @Override
     public Object eval(byte[] script, List<byte[]> keys, List<byte[]> args) {
-        return super.eval(script, keys, args);
+        return new JedisCommand<Object>(this) {
+            @Override
+            public Object execute(JedisCluster cluster) {
+                return cluster.eval(script, keys, args);
+            }
+        }.run();
+
     }
 
     @Override
     public Object eval(byte[] script, byte[] key) {
-        return super.eval(script, key);
+
+        return new JedisCommand<Object>(this) {
+            @Override
+            public Object execute(JedisCluster cluster) {
+                return cluster.eval(script, key);
+            }
+        }.run();
+
     }
 
     @Override
     public Object evalsha(byte[] script, byte[] key) {
-        return super.evalsha(script, key);
+        return new JedisCommand<Object>(this) {
+            @Override
+            public Object execute(JedisCluster cluster) {
+                return cluster.evalsha(script, key);
+            }
+        }.run();
+
     }
 
     @Override
     public Object evalsha(byte[] sha1, List<byte[]> keys, List<byte[]> args) {
-        return super.evalsha(sha1, keys, args);
+
+        return new JedisCommand<Object>(this) {
+            @Override
+            public Object execute(JedisCluster cluster) {
+                return cluster.evalsha(sha1, keys, args);
+            }
+        }.run();
+
     }
 
     @Override
     public Object evalsha(byte[] sha1, int keyCount, byte[]... params) {
-        return super.evalsha(sha1, keyCount, params);
+
+        return new JedisCommand<Object>(this) {
+            @Override
+            public Object execute(JedisCluster cluster) {
+                return cluster.evalsha(sha1, keyCount, params);
+            }
+        }.run();
     }
 
     @Override
     public List<Long> scriptExists(byte[] key, byte[][] sha1) {
-        return super.scriptExists(key, sha1);
+
+        return new JedisCommand<List<Long>>(this) {
+            @Override
+            public List<Long> execute(JedisCluster cluster) {
+                return cluster.scriptExists(key, sha1);
+            }
+        }.run();
+
     }
 
     @Override
     public byte[] scriptLoad(byte[] script, byte[] key) {
-        return super.scriptLoad(script, key);
+
+        return new JedisCommand<byte[]>(this) {
+            @Override
+            public byte[] execute(JedisCluster cluster) {
+                return cluster.scriptLoad(script, key);
+            }
+        }.run();
+
     }
 
     @Override
     public String scriptFlush(byte[] key) {
-        return super.scriptFlush(key);
+
+        return new JedisCommand<String>(this) {
+            @Override
+            public String execute(JedisCluster cluster) {
+                return cluster.scriptFlush(key);
+            }
+        }.run();
     }
 
     @Override
     public String scriptKill(byte[] key) {
-        return super.scriptKill(key);
+        return new JedisCommand<String>(this) {
+            @Override
+            public String execute(JedisCluster cluster) {
+                return cluster.scriptKill(key);
+            }
+        }.run();
+
     }
 
     @Override
     public Long del(byte[]... keys) {
-        return super.del(keys);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.del(keys);
+            }
+        }.run();
+
     }
 
     @Override
     public List<byte[]> blpop(int timeout, byte[]... keys) {
-        return super.blpop(timeout, keys);
+        return new JedisCommand<List<byte[]>>(this) {
+            @Override
+            public List<byte[]> execute(JedisCluster cluster) {
+                return cluster.blpop(timeout, keys);
+            }
+        }.run();
+
     }
 
     @Override
     public List<byte[]> brpop(int timeout, byte[]... keys) {
-        return super.brpop(timeout, keys);
+        return new JedisCommand<List<byte[]>>(this) {
+            @Override
+            public List<byte[]> execute(JedisCluster cluster) {
+                return cluster.brpop(timeout, keys);
+            }
+        }.run();
+
     }
 
     @Override
     public List<byte[]> mget(byte[]... keys) {
-        return super.mget(keys);
+
+        return new JedisCommand<List<byte[]>>(this) {
+            @Override
+            public List<byte[]> execute(JedisCluster cluster) {
+                return cluster.mget(keys);
+            }
+        }.run();
+
     }
 
     @Override
     public String mset(byte[]... keysvalues) {
-        return super.mset(keysvalues);
+        return new JedisCommand<String>(this) {
+            @Override
+            public String execute(JedisCluster cluster) {
+                return cluster.mset(keysvalues);
+            }
+        }.run();
+
     }
 
     @Override
     public Long msetnx(byte[]... keysvalues) {
-        return super.msetnx(keysvalues);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.msetnx(keysvalues);
+            }
+        }.run();
+
     }
 
     @Override
     public String rename(byte[] oldkey, byte[] newkey) {
-        return super.rename(oldkey, newkey);
+
+        return new JedisCommand<String>(this) {
+            @Override
+            public String execute(JedisCluster cluster) {
+                return cluster.rename(oldkey, newkey);
+            }
+        }.run();
+
     }
 
     @Override
     public Long renamenx(byte[] oldkey, byte[] newkey) {
-        return super.renamenx(oldkey, newkey);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.renamenx(oldkey, newkey);
+            }
+        }.run();
+
     }
 
     @Override
     public byte[] rpoplpush(byte[] srckey, byte[] dstkey) {
-        return super.rpoplpush(srckey, dstkey);
+
+        return new JedisCommand<byte[]>(this) {
+            @Override
+            public byte[] execute(JedisCluster cluster) {
+                return cluster.rpoplpush(srckey, dstkey);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<byte[]> sdiff(byte[]... keys) {
-        return super.sdiff(keys);
+
+        return new JedisCommand<Set<byte[]>>(this) {
+            @Override
+            public Set<byte[]> execute(JedisCluster cluster) {
+                return cluster.sdiff(keys);
+            }
+        }.run();
+
     }
 
     @Override
     public Long sdiffstore(byte[] dstkey, byte[]... keys) {
-        return super.sdiffstore(dstkey, keys);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.sdiffstore(dstkey, keys);
+            }
+        }.run();
+
     }
 
     @Override
     public Set<byte[]> sinter(byte[]... keys) {
-        return super.sinter(keys);
+
+        return new JedisCommand<Set<byte[]>>(this) {
+            @Override
+            public Set<byte[]> execute(JedisCluster cluster) {
+                return cluster.sinter(keys);
+            }
+        }.run();
+
     }
 
     @Override
     public Long sinterstore(byte[] dstkey, byte[]... keys) {
-        return super.sinterstore(dstkey, keys);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.sinterstore(dstkey, keys);
+            }
+        }.run();
+
     }
 
     @Override
     public Long smove(byte[] srckey, byte[] dstkey, byte[] member) {
-        return super.smove(srckey, dstkey, member);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.smove(srckey, dstkey, member);
+            }
+        }.run();
+
     }
 
     @Override
     public Long sort(byte[] key, SortingParams sortingParameters, byte[] dstkey) {
-        return super.sort(key, sortingParameters, dstkey);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.sort(key, sortingParameters, dstkey);
+            }
+        }.run();
+
     }
 
     @Override
     public Long sort(byte[] key, byte[] dstkey) {
-        return super.sort(key, dstkey);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.sort(key, dstkey);
+            }
+        }.run();
     }
 
     @Override
     public Set<byte[]> sunion(byte[]... keys) {
-        return super.sunion(keys);
+        return new JedisCommand<Set<byte[]>>(this) {
+            @Override
+            public Set<byte[]> execute(JedisCluster cluster) {
+                return cluster.sunion(keys);
+            }
+        }.run();
     }
 
     @Override
     public Long sunionstore(byte[] dstkey, byte[]... keys) {
-        return super.sunionstore(dstkey, keys);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.sunionstore(dstkey, keys);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zinterstore(byte[] dstkey, byte[]... sets) {
-        return super.zinterstore(dstkey, sets);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.zinterstore(dstkey, sets);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zinterstore(byte[] dstkey, ZParams params, byte[]... sets) {
-        return super.zinterstore(dstkey, params, sets);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.zinterstore(dstkey, params, sets);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zunionstore(byte[] dstkey, byte[]... sets) {
-        return super.zunionstore(dstkey, sets);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.zunionstore(dstkey, sets);
+            }
+        }.run();
+
     }
 
     @Override
     public Long zunionstore(byte[] dstkey, ZParams params, byte[]... sets) {
-        return super.zunionstore(dstkey, params, sets);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.zunionstore(dstkey, params, sets);
+            }
+        }.run();
+
     }
 
     @Override
     public byte[] brpoplpush(byte[] source, byte[] destination, int timeout) {
-        return super.brpoplpush(source, destination, timeout);
+
+        return new JedisCommand<byte[]>(this) {
+            @Override
+            public byte[] execute(JedisCluster cluster) {
+                return cluster.brpoplpush(source, destination, timeout);
+            }
+        }.run();
+
     }
 
     @Override
     public Long publish(byte[] channel, byte[] message) {
-        return super.publish(channel, message);
+
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.publish(channel, message);
+            }
+        }.run();
+
     }
 
     @Override
     public void subscribe(BinaryJedisPubSub jedisPubSub, byte[]... channels) {
-        super.subscribe(jedisPubSub, channels);
+         new JedisCommand<Integer>(this) {
+            @Override
+            public Integer execute(JedisCluster cluster) {
+                 cluster.subscribe(jedisPubSub, channels);
+                 return 1;
+            }
+        }.run();
+
     }
 
     @Override
     public void psubscribe(BinaryJedisPubSub jedisPubSub, byte[]... patterns) {
-        super.psubscribe(jedisPubSub, patterns);
+
+        new JedisCommand<Integer>(this) {
+            @Override
+            public Integer execute(JedisCluster cluster) {
+                cluster.subscribe(jedisPubSub, patterns);
+                return 0;
+            }
+        }.run();
     }
 
     @Override
     public Long bitop(BitOP op, byte[] destKey, byte[]... srcKeys) {
-        return super.bitop(op, destKey, srcKeys);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.bitop(op, destKey, srcKeys);
+
+            }
+        }.run();
+
     }
 
     @Override
     public String pfmerge(byte[] destkey, byte[]... sourcekeys) {
-        return super.pfmerge(destkey, sourcekeys);
+        return new JedisCommand<String>(this) {
+            @Override
+            public String execute(JedisCluster cluster) {
+                return cluster.pfmerge(destkey, sourcekeys);
+
+            }
+        }.run();
+
     }
 
     @Override
     public Long pfcount(byte[]... keys) {
-        return super.pfcount(keys);
+        return new JedisCommand<Long>(this) {
+            @Override
+            public Long execute(JedisCluster cluster) {
+                return cluster.pfcount(keys);
+
+            }
+        }.run();
+
     }
 
 
@@ -2473,7 +3562,7 @@ public class RediseAutoProxyCluster extends JedisCluster {
 
     /**
      * 检查集群状态是否可用
-     * @return
+     * @return 是否可用
      */
     public boolean CheckClusterState(Set<HostAndPort> hosts){
         boolean  result = false;
@@ -2494,6 +3583,7 @@ public class RediseAutoProxyCluster extends JedisCluster {
                     }
                 }
             }catch (IOException e){
+                continue;
             }
             finally {
                 connection.close();
