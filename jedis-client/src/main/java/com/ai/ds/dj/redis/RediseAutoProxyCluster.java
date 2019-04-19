@@ -3,6 +3,8 @@ package com.ai.ds.dj.redis;
 import com.ai.ds.dj.connection.*;
 import com.ai.ds.dj.redis.controller.ControllerMsgThread;
 import com.ai.ds.dj.redis.controller.ControllerPubSub;
+import com.ai.ds.dj.redis.log.LockFile;
+import com.ai.ds.dj.redis.rule.StatusSwitchRule;
 import redis.clients.jedis.*;
 import redis.clients.jedis.params.set.SetParams;
 import redis.clients.jedis.params.sortedset.ZAddParams;
@@ -21,6 +23,8 @@ import java.util.concurrent.atomic.AtomicLong;
 public class RediseAutoProxyCluster extends JedisCluster {
 
     private JedisCluster seconder;
+
+    private LockFile lock = new LockFile();
 
     public JedisCluster getSeconder() {
         return seconder;
@@ -69,8 +73,7 @@ public class RediseAutoProxyCluster extends JedisCluster {
     //被节点host信息
     private Set<HostAndPort> secondHosts;
     /*切换规则*/
-    private SwitchRule rules ;
-
+    private SwitchRule rules = new StatusSwitchRule() ;
     /**
      * 是否当前可用的链接是主集群
      */
@@ -79,6 +82,16 @@ public class RediseAutoProxyCluster extends JedisCluster {
     private volatile  boolean backupState=true;
     /*主集群的状态*/
     private volatile  boolean masterState=false;
+    /*手动与自动标示，如果false标示是手动模式下，如果true标示是自动模式下*/
+    private volatile  boolean isAuto=true;
+
+    public boolean isAuto() {
+        return isAuto;
+    }
+
+    public void setAuto(boolean auto) {
+        isAuto = auto;
+    }
 
     /**
      * 统计调用量
@@ -92,7 +105,7 @@ public class RediseAutoProxyCluster extends JedisCluster {
     /**
      * 检查状态的线程
      */
-    private CheckStateThread thread = new CheckStateThread(this);
+//    private CheckStateThread thread = new CheckStateThread(this);
 
     public RediseAutoProxyCluster(Set<HostAndPort> maserNode,Set<HostAndPort> sencodeNode) {
         this();
@@ -116,7 +129,6 @@ public class RediseAutoProxyCluster extends JedisCluster {
      * @param address
      */
     private void initSet(Set<HostAndPort> sets,String address){
-
         if(address!=null){
             String[] str = address.split(",");
             for(String addport:str){
@@ -128,6 +140,25 @@ public class RediseAutoProxyCluster extends JedisCluster {
             }
         }
 
+    }
+
+    /**
+     * 启动集群状态检查
+     */
+    private void startCheckState(){
+        Thread task = new Thread(new CheckStateThread(this));
+        task.setName("redis-check-thread");
+        task.start();
+    }
+
+    /**
+     * 控制字监听
+     */
+    private void startControllerThread(){
+        //启动控制字监听
+        Thread task = new Thread(new ControllerMsgThread(this));
+        task.setName("redis-controller-Msg");
+        task.start();
     }
 
     public void init(){
@@ -143,10 +174,33 @@ public class RediseAutoProxyCluster extends JedisCluster {
             this.seconder = new JedisCluster(secondHosts);
 
         }
-        Thread task = new Thread(new ControllerMsgThread(this));
-        task.setName("redis-controller-Msg");
-        task.start();
-       this.isMaster = true;
+
+        startCheckState();
+
+        startControllerThread();
+
+        this.isMaster = true;
+        lock.writeMaster();
+
+    }
+
+    /**
+     * 切换手动模式主模式先
+     *
+     */
+    public void swtichMaster(){
+        this.isAuto = false;
+        this.isMaster = true;
+        this.lock.writeMaster();
+    }
+
+    /**
+     * 切换手动模式下的备集群
+     */
+    public void swtichSencond(){
+        this.isAuto = false;
+        this.isMaster = false;
+        this.lock.writeSencond();
     }
 
     /**
@@ -163,24 +217,38 @@ public class RediseAutoProxyCluster extends JedisCluster {
         this.execAllcount.addAndGet(1);
     }
 
+
     /**
-     * 主备切换：
+     * 自动手动切换主备切换：
      */
     public synchronized  void changeState(){
-        if(this.rules!=null) {
-            boolean isbackup = rules.switchBackUp(this);
-            //如果到达主备切换时，需要切换为备机器时
-            if (isbackup) {
-                this.master.close();
-                this.isMaster = false;
 
-            }
-            //为到达主备切换
-            else {
-                this.seconder.close();
-                this.isMaster = true;
+        //自动模式下通过规则去切换
+        if(this.isAuto){
+            if(this.rules!=null) {
+                boolean isbackup = rules.switchBackUp(this);
+                //如果到达主备切换时，需要切换为备机器时
+                if (isbackup) {
+                    //当前是主时，切换到被
+                    if(this.isMaster){
+//                        this.master.close();
+                        this.isMaster = false;
+                        this.lock.writeSencond();
+                    }
+
+                }
+                //为到达主备切换
+                else {
+                    if(!this.isMaster){
+                        this.isMaster = true;
+                        this.lock.writeMaster();
+                    }
+//                    this.seconder.close();
+
+                }
             }
         }
+
     }
 
     public boolean isMaster(){

@@ -15,14 +15,18 @@ import java.util.Map;
 public class StatusSwitchRule implements SwitchRule {
     @Override
     public boolean switchBackUp(RediseAutoProxyCluster cluster) {
+
+        System.out.println("当前模式为[true标示主机房中，false标示备机房中]："+cluster.isMaster());
+        //主集群状态可用，不用切换到备集群
+        if(cluster.isMasterState()) {
+            return false;
+        }
+        //主集群状态不可用，被集群可用，切换到被集群
+        if(!cluster.isMasterState()&&cluster.isBackupState()) {
+            return true;
+        }
+
         return false;
-//        if(cluster.isMasterState()) {
-//            return false;
-//        }
-//        if(!cluster.isMasterState()&&cluster.isBackupState()) {
-//            return true;
-//        }
-//        return false;
 
     }
 }

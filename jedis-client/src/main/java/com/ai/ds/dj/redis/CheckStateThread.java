@@ -16,9 +16,12 @@ public class CheckStateThread implements Runnable {
     public void run() {
         while(tag){
            boolean master = cluster.CheckClusterState(cluster.getMasterHosts());
+           System.out.println("当前master状态为："+master);
            cluster.setMasterState(master);
            boolean slaver = cluster.CheckClusterState(cluster.getSecondHosts());
            cluster.setBackupState(slaver);
+           System.out.println("当前备集群状态为："+slaver);
+
             try {
                 Thread.sleep(cluster.getCheckInterval());
             } catch (InterruptedException e) {
