@@ -2,14 +2,13 @@ package com.ai.ds.dj.redis;
 
 import com.ai.ds.dj.connection.*;
 import com.ai.ds.dj.redis.controller.ControllerMsgThread;
-import com.ai.ds.dj.redis.controller.ControllerPubSub;
 import com.ai.ds.dj.redis.log.LockFile;
 import com.ai.ds.dj.redis.rule.StatusSwitchRule;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import redis.clients.jedis.*;
 import redis.clients.jedis.params.set.SetParams;
 import redis.clients.jedis.params.sortedset.ZAddParams;
 import redis.clients.jedis.params.sortedset.ZIncrByParams;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -23,75 +22,43 @@ import java.util.concurrent.atomic.AtomicLong;
 public class RediseAutoProxyCluster extends JedisCluster {
 
     private JedisCluster seconder;
-
+    private  JedisCluster master;
+    /**
+     * 记录当前使用节点的lock文件
+     */
     private LockFile lock = new LockFile();
 
-    public JedisCluster getSeconder() {
-        return seconder;
-    }
-
-    public JedisCluster getMaster() {
-        return master;
-    }
-
-    private  JedisCluster master;
-
-    public String getMasterAddress() {
-        return masterAddress;
-    }
-
-    public void setMasterAddress(String masterAddress) {
-        this.masterAddress = masterAddress;
-    }
-
-    public String getSecondAddress() {
-        return secondAddress;
-    }
-
-    public void setSecondAddress(String secondAddress) {
-        this.secondAddress = secondAddress;
-    }
-
     /**
-     * 检查集群是否可用的周期
+     * 检查集群是否可用的周期时间（毫秒级别）
      */
     private long checkInterval=20*1000L;
-
+    /**
+     * 主中心的地址
+     */
     private String masterAddress;
+    /**
+     * 备中心的地址
+     */
     private String secondAddress;
-
-    public Set<HostAndPort> getMasterHosts() {
-        return masterHosts;
-    }
-
-    public Set<HostAndPort> getSecondHosts() {
-        return secondHosts;
-    }
 
     /**主节点host信息**/
     private Set<HostAndPort> masterHosts;
-    //被节点host信息
+    /**被节点host信息**/
     private Set<HostAndPort> secondHosts;
-    /*切换规则*/
+    /**
+     * 切换规则
+     **/
     private SwitchRule rules = new StatusSwitchRule() ;
     /**
      * 是否当前可用的链接是主集群
      */
     private volatile  boolean isMaster=true;
-    /*备集群的状态*/
+    /**备集群的状态**/
     private volatile  boolean backupState=true;
-    /*主集群的状态*/
-    private volatile  boolean masterState=false;
-    /*手动与自动标示，如果false标示是手动模式下，如果true标示是自动模式下*/
+    /**主集群的状态**/
+    private volatile  boolean masterState=true;
+    /**手动与自动标示，如果false标示是手动模式下，如果true标示是自动模式下**/
     private volatile  boolean isAuto=true;
-
-    public boolean isAuto() {
-        return isAuto;
-    }
-
-    public void setAuto(boolean auto) {
-        isAuto = auto;
-    }
 
     /**
      * 统计调用量
@@ -101,15 +68,19 @@ public class RediseAutoProxyCluster extends JedisCluster {
      * 统计失败调用量
      */
     private AtomicLong execErrorcount = new AtomicLong(0);
-
     /**
-     * 检查状态的线程
+     * 链接池设置
      */
-//    private CheckStateThread thread = new CheckStateThread(this);
+    private GenericObjectPoolConfig config = new GenericObjectPoolConfig();
+    /**
+     * 链接超时时间
+     */
+    private  int timeout = 2000;
+    /**
+     * 默认尝试次数
+     */
+    protected static final int DEFAULT_MAX_ATTEMPTS = 5;
 
-    public RediseAutoProxyCluster(Set<HostAndPort> maserNode,Set<HostAndPort> sencodeNode) {
-        this();
-    }
 
     public RediseAutoProxyCluster() {
         super(Collections.emptySet());
@@ -120,6 +91,30 @@ public class RediseAutoProxyCluster extends JedisCluster {
         this();
         this.masterAddress = maserNode;
         this.secondAddress= sencodeNode;
+        init();
+    }
+
+    public RediseAutoProxyCluster(String maserNode, String sencodeNode, GenericObjectPoolConfig config){
+        this();
+        this.masterAddress = maserNode;
+        this.secondAddress= sencodeNode;
+        if(config!=null){
+            this.config = config;
+        }
+        init();
+    }
+
+    public RediseAutoProxyCluster(String maserNode, String sencodeNode,int timeout, GenericObjectPoolConfig config){
+        this();
+        this.masterAddress = maserNode;
+        this.secondAddress= sencodeNode;
+        if(config!=null){
+            this.config = config;
+        }
+        if(timeout!=-1){
+            this.timeout = timeout;
+        }
+
         init();
     }
 
@@ -167,18 +162,18 @@ public class RediseAutoProxyCluster extends JedisCluster {
         initSet(masterHosts,this.masterAddress);
         initSet(secondHosts,this.secondAddress);
         if(!masterHosts.isEmpty()){
-            this.master = new JedisCluster(masterHosts);
+            this.master = new JedisCluster(masterHosts,this.timeout,this.config);
 
         }
         if(!secondHosts.isEmpty()){
-            this.seconder = new JedisCluster(secondHosts);
+            this.seconder = new JedisCluster(secondHosts,this.timeout,this.config);
 
         }
-
+        //开启检查状态的线程
         startCheckState();
-
+        //控制消息监听器
         startControllerThread();
-
+        //使用主集群
         this.isMaster = true;
         lock.writeMaster();
 
@@ -231,11 +226,9 @@ public class RediseAutoProxyCluster extends JedisCluster {
                 if (isbackup) {
                     //当前是主时，切换到被
                     if(this.isMaster){
-//                        this.master.close();
                         this.isMaster = false;
                         this.lock.writeSencond();
                     }
-
                 }
                 //为到达主备切换
                 else {
@@ -243,8 +236,6 @@ public class RediseAutoProxyCluster extends JedisCluster {
                         this.isMaster = true;
                         this.lock.writeMaster();
                     }
-//                    this.seconder.close();
-
                 }
             }
         }
@@ -3657,7 +3648,7 @@ public class RediseAutoProxyCluster extends JedisCluster {
                     }
                 }
             }catch (IOException e){
-                continue;
+
             }
             finally {
                 connection.close();
@@ -3674,6 +3665,68 @@ public class RediseAutoProxyCluster extends JedisCluster {
         this.checkInterval = checkInterval;
     }
 
+    public JedisCluster getSeconder() {
+        return seconder;
+    }
+
+    public JedisCluster getMaster() {
+        return master;
+    }
+
+    public String getMasterAddress() {
+        return masterAddress;
+    }
+
+    public void setMasterAddress(String masterAddress) {
+        this.masterAddress = masterAddress;
+    }
+
+    public String getSecondAddress() {
+        return secondAddress;
+    }
+
+    public void setSecondAddress(String secondAddress) {
+        this.secondAddress = secondAddress;
+    }
+
+    /**
+     * 主节点列表
+     * @return
+     */
+    public Set<HostAndPort> getMasterHosts() {
+        return masterHosts;
+    }
+
+    /**
+     * 备节点地址列表
+     * @return
+     */
+    public Set<HostAndPort> getSecondHosts() {
+        return secondHosts;
+    }
 
 
+    public boolean isAuto() {
+        return isAuto;
+    }
+
+    public void setAuto(boolean auto) {
+        isAuto = auto;
+    }
+
+    public GenericObjectPoolConfig getConfig() {
+        return config;
+    }
+
+    public void setConfig(GenericObjectPoolConfig config) {
+        this.config = config;
+    }
+
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
 }
